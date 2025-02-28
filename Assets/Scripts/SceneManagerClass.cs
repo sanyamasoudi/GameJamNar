@@ -63,7 +63,7 @@ public class SceneManagerClass : MonoBehaviour {
     IEnumerator PlayMenu()
     {
         yield return new WaitForSeconds(.5f);
-        SceneManager.LoadScene("MainMenu");
+        SceneManager.LoadScene("Game 1");
     }
 
     IEnumerator PlayGame()

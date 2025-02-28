@@ -7,11 +7,11 @@ public class GeneralButtonService : MonoBehaviour
     [SerializeField] private float exitScale;
     void OnMouseEnter()
     {
-        transform.DOScale(2.5f, 0.3f);
+        transform.DOScale(enterScale, 0.3f);
     }
 
     void OnMouseExit()
     {
-        transform.DOScale(2.3f, 0.3f);
+        transform.DOScale(exitScale, 0.3f);
     }
 }

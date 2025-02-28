@@ -1,14 +1,17 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using EnumCollection;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
-public class GM : MonoBehaviour {
-
+public class GM : MonoBehaviour
+{
     public int gold = 100;
 
-    public Text goldDisplay;
+    public TextMeshProUGUI goldDisplay;
     public Image cursorImg;
     public Sprite normalCursor;
     public Sprite destroyCursor;
@@ -24,6 +27,7 @@ public class GM : MonoBehaviour {
 
     public SpriteRenderer planetFace;
     public Sprite[] planetFaces;
+    public GameObject[] planetModes;
     private int planetIndex;
     public Animator planetAnim;
     bool once;
@@ -33,23 +37,27 @@ public class GM : MonoBehaviour {
     public Animator fadePanel;
     public GameObject theEnd;
 
-    private MusicBG bg;
-
+   // private MusicBG bg;
+    private int lastIndex = -1;
     private void Start()
     {
-        bg = GameObject.FindGameObjectWithTag("Music").GetComponent<MusicBG>();
+        //bg = GameObject.FindGameObjectWithTag("Music").GetComponent<MusicBG>();
     }
 
     private void Update()
     {
-
-        if (danger < 100) {
+        if (danger < 100)
+        {
             planetIndex = 0;
-        } else if (danger >= 100 && danger < 200 && once == false) {
+        }
+        else if (danger >= 100 && danger < 200 && once == false)
+        {
             planetAnim.SetTrigger("hurt");
             once = true;
             planetIndex = 1;
-        } else if (danger >= 200 && danger < 400 && once == true) {
+        }
+        else if (danger >= 200 && danger < 400 && once == true)
+        {
             planetAnim.SetTrigger("hurt");
             once = false;
             planetIndex = 2;
@@ -59,7 +67,7 @@ public class GM : MonoBehaviour {
             planetAnim.SetTrigger("hurt");
             once = true;
             planetIndex = 3;
-            bg.TrackTwo();
+            //bg.TrackTwo();
         }
         else if (danger >= 600 && danger < 800 && once == true)
         {
@@ -78,7 +86,7 @@ public class GM : MonoBehaviour {
             planetAnim.SetTrigger("hurt");
             once = false;
             planetIndex = 6;
-            bg.TrackThree();
+           // bg.TrackThree();
         }
         else if (danger >= 1100 && danger < 1200 && once == false)
         {
@@ -103,7 +111,7 @@ public class GM : MonoBehaviour {
             planetAnim.SetTrigger("hurt");
             once = false;
             planetIndex = 10;
-            bg.TrackFour();
+           // bg.TrackFour();
         }
         else if (danger >= 1800 && danger < 2000 && once == false)
         {
@@ -111,19 +119,36 @@ public class GM : MonoBehaviour {
             once = true;
             planetIndex = 11;
         }
-        if (danger >= 2000 && once == true) {
 
-            if (once == true) {
-                bg.DeathMusic();
+        if (danger >= 2000 && once == true)
+        {
+            if (once == true)
+            {
+                AudioManager.Instance.Play(Sound.WAAAAAAAAAA.ToString());
                 Death();
             }
-
         }
 
-        planetFace.sprite = planetFaces[planetIndex];
+        if (lastIndex != planetIndex)
+        {
+            lastIndex = planetIndex;
+            planetFace.sprite = planetFaces[planetIndex];
+            planetModes.ToList().ForEach((gm) => { gm.SetActive(false); });
+            planetModes[planetIndex].SetActive(true);
+            if (planetIndex < 4)
+            {
+                AudioManager.Instance.Play(Sound.Yippee.ToString());
+            }
 
+            if (planetIndex > 6)
+            {
+                AudioManager.Instance.Play(Sound.WAAAAAAAAAA.ToString());
+            }
+        }
+     
         Debug.Log("DANGER " + danger);
-        if (danger < 2000) {
+        if (danger < 2000)
+        {
             goldDisplay.text = gold.ToString();
         }
 
@@ -132,12 +157,14 @@ public class GM : MonoBehaviour {
         {
             cursorImg.sprite = cursors[buildingSelected];
         }
-        else {
+        else
+        {
             cursorImg.sprite = normalCursor;
         }
     }
 
-    void Death() {
+    void Death()
+    {
         theEnd.SetActive(true);
 
         gold = 0;
@@ -149,29 +176,32 @@ public class GM : MonoBehaviour {
         once = false;
     }
 
-    public void Build(int buildIndex) {
-
-        if (buildingSelected == 0) {
+    public void Build(int buildIndex)
+    {
+        if (buildingSelected == 0)
+        {
             if (gold >= prices[buildIndex])
             {
-
                 gold -= prices[buildIndex];
                 buildingSelected = buildIndex;
             }
         }
     }
 
-    public void BackToMenu() {
+    public void BackToMenu()
+    {
         StartCoroutine(Finish());
     }
 
-    IEnumerator Finish() {
+    IEnumerator Finish()
+    {
         fadePanel.SetTrigger("fadeIn");
         yield return new WaitForSeconds(.5f);
-        SceneManager.LoadScene("MainMenu");
+        LoadingManager.Instance.LoadScene(1);
     }
 
-    public void DestroySmt() {
+    public void DestroySmt()
+    {
         isDestroy = true;
     }
 }

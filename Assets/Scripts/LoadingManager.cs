@@ -52,7 +52,7 @@ public class LoadingManager : MonoBehaviour
             progressBar.value = _target;
         } while (scene.progress < 0.9f);
 
-        await Task.Delay(10000);
+        await Task.Delay(5000);
         scene.allowSceneActivation = true;
 
         #region After Loading Scene

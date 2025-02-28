@@ -9,6 +9,6 @@ public class HomeBtnService : GeneralButtonService
 
     void OnMouseUp()
     {
-        LoadingManager.Instance.LoadScene(0);
+        LoadingManager.Instance.LoadScene(2);
     }
 }
